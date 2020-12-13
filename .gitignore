@@ -1,0 +1,6 @@
+
+# ignore the .idea directory (pycharm)
+.idea/
+
+# ignore swo files
+*.swo
