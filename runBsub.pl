@@ -40,7 +40,8 @@ use Digest::MD5 qw(md5_hex);
     print "\n\n*** Unknown option '$word'"; giveHelp(); exit;}
 
   giveHelp("\n*** Please provide a valid commands file\n") unless ($cmdF and (-f $cmdF));
-  $queue ||= $defQueue;
+
+  $queue ||= $defQueue; # the ||= operator is like saying $default_var = $default_var unless it is otherwise defined
   $shell ||= $defShell;
   $mem   ||= $defMem;
   $errD ||= $defErrD; make_path($errD) unless (-d $errD);
@@ -55,7 +56,7 @@ sub processCommandsFile {
   local(*IN); open(IN,$cmdF);
   while (my $l=<IN>) {
     trim(\$l); 
-    next if ($l =~ /^#|^ *$/);
+    next if ($l =~ /^#|^ *$/); # next means skip to next itertion (same as continue in python)
     my($request,$jobID) = split(/\s*###\s*/,$l);
     next unless ($request);
     $jobID ||= substr(md5_hex($l . time()),0,10);
