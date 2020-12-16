@@ -1,15 +1,33 @@
-"""
-Run a series of jobs with a specified analysis tool.
+u"""
+Runnig multiple jobs with the same job command.
 
-    This script grabs a list of files from a given directory (input_dir)
-and feeds each file into the command of a specified analysis tool.
-the analysis tool command is then wrapped with the bsub command.
-    both the input_dir, the analysis tool arguments and the bsub arguments can
-be provided by the user as arguments of the main script.
+    This script grabs a list of files_names from a given directory (input_dir)
+and inserts each file name into a job command. the job command is wrapped with
+the bsub command along with it's specified options and run in bash.
+    both the input directory, the job command and the bsub arguments can
+be passed as arguments by the user.
 
-    Todo:
-        * write the main loop as a function.
-        * make sure no email is sent after job completion if error and output are saved to file.
+    example:
+    running a cutadapt command with new-all queue::
+            $python run_bsub.py -q new-all.q -in fastq_files  -out trimmed_files
+             -regex SOME_REGULAR_EXPRESSION 'cutadapt -a AGATCGGAAGAGCACAC
+             -A AGATCGGAAGAGC --times 2 -q 30 -m 20
+             -o $output_dir/$file1_trimmed.fastq -p $output_dir/$file2_trimmed.fastq
+             $input_dir/$file1_001.fastq.gz $input_dir/$file2_001.fastq.gz'
+    
+        notice the quotes around the job command (cutadapt in this case),
+    this is required for correct parsing. Also notice the dollar signs preceded by either file, input_dir or output_dir,
+    these are reserved keywords that will be replaced by the job specific arguments passed under -in, -out and the match
+    of the regular expression.
+    The regular expression is designed to capture the unique sample file name
+    and insert it in the appropriate location in the job command.
+
+        Todo:
+            * write the main loop as a function.
+            * make sure no email is sent after job completion if error and output are saved to file.
+            * add a readable time stamp to err file names
+            * document how command needs to passed
+            * give more help on the argument parser (groups?)
 """
 import re
 import subprocess
